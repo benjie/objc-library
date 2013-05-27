@@ -1,0 +1,53 @@
+//
+//  BGPrefix.pch
+//  Library
+//
+//  Created by Benjie Gillam on 10/01/2010.
+//  Updated to a more releaseable format on 27/05/2013.
+//  Copyright (c) 2013 Benjie Gillam.
+//
+//  MIT License
+//
+
+//
+// This file contains many little tweaks that I use to make my life easier.
+// To work, you must have called your app delegate AppDelegate (no prefix).
+//
+
+#pragma mark - Aliases
+// Because I'm lazy...
+
+// Shortcut to the app delegate
+#define APP ((AppDelegate *)([UIApplication sharedApplication].delegate))
+
+// Alias for [NSPredicate predicateWithFormat:...]
+#define PWF(...) [NSPredicate predicateWithFormat:__VA_ARGS__]
+
+// Alias for [NSString stringWithFormat:...]
+#define SWF(...) [NSString stringWithFormat:__VA_ARGS__]
+
+#pragma mark - Alert aliases
+// A simple UIAlertView
+#define BG_ALERT(TITLE,MESSAGE,OKAY) {\
+UIAlertView *ALERT_av = [[UIAlertView alloc] initWithTitle:TITLE message:MESSAGE delegate:nil cancelButtonTitle:OKAY otherButtonTitles:nil];\
+[ALERT_av show];\
+}
+
+#define BG_UNIMPLEMENTED() BG_ALERT(@"Unimplemented",@"This feature has not yet been implemented. Please check back in a later release.",@"Okay")
+
+#pragma mark - Device specific helpers
+// Detects if we're on an iPad or not.
+#define BG_IS_IPAD_IDIOM (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
+// Returns @"iPad" or @"iPhone" depending on running platform
+#define BG_DEVICE_NAME (BG_IS_IPAD_IDIOM ? @"iPad" : @"iPhone")
+
+#pragma mark Device specific class mutators
+// Given a class, e.g. [BGAppDelegate class], return scoped class name string: @"BGAppDelegate_iPad"
+#define BGScopedStringFromBaseClass(klass) SWF(@"%@_%@", NSStringFromClass(klass), BG_DEVICE_NAME)
+
+// Given a class, e.g. [BGAppDelegate class], return scoped class, e.g. BGAppDelegate_iPad
+#define BGScopedClassFromBaseClass(klass) NSClassFromString(BGScopedStringFromBaseClass(klass))
+
+#pragma mark View controllers
+#define BGScopedViewControllerInstance(klass) [[BGScopedClassFromBaseClass(klass) alloc] initWithNibName:BGScopedStringFromBaseClass(klass) bundle:nil]
